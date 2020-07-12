@@ -14,7 +14,7 @@ test('onError is called when Error is thrown', function () {
     function (e) { result = 'uh oh'; } //onError
   );
 
-  equal(result, __);
+  equal(result, 'uh oh');
 });
 
 test('class level catch moves to the next sequence on error', function () {
@@ -22,11 +22,11 @@ test('class level catch moves to the next sequence on error', function () {
     Observable.throw(new Error('If at first you dont succeed')),
     Observable.throw(new Error('Try, try, try again')),
     Observable.just(42)
-  ).subscribe(function (x) { equal(x, __); });
+  ).subscribe(function (x) { equal(x, 42); });
 });
 
 test('instance level catch moves to the next sequence on error', function () {
-  var throwingObservable = Observable.throw(new Error(__));
+  var throwingObservable = Observable.throw(new Error('help'));
 
   throwingObservable.catch(function (e) {
     return e.message === 'help' ? Observable.just('I need somebody') : Observable.just('not just anybody');
@@ -43,7 +43,7 @@ test('continue a stream that is terminated normally or by an Error with the next
     Rx.Observable.just('C')
   ).subscribe(easy.push.bind(easy));
 
-  equal(easy.join(''), __);
+  equal(easy.join(''), 'ABC');
 });
 
 asyncTest('retry a sequence a number of times', function () {
@@ -56,7 +56,7 @@ asyncTest('retry a sequence a number of times', function () {
     }
     return Rx.Observable.return(42);
   })
-  .retry(__).subscribe(
+  .retry(3).subscribe(
     function (x) { received = x; },
     function (e) { /*woops*/}
   );
@@ -76,5 +76,5 @@ test('finally invokes action after the sequence ends', function () {
     function (e) { result.push('finally'); }
   );
 
-  equal(result.join(' '), __);
+  equal(result.join(' '), 'finally some good news');
 });
